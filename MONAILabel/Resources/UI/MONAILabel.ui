@@ -609,7 +609,7 @@
     <item>
     <widget class="ctkCollapsibleButton" name="TumorDepthCollapsibleButton">
      <property name="text">
-      <string>Tumour depth</string>
+      <string>Tumor depth</string>
      </property>
      <property name="collapsed">
       <bool>true</bool>
@@ -641,6 +641,96 @@
           </property>
           <property name="text">
             <string>Deep</string>
+          </property>
+        </widget>
+      </item>
+      </layout>
+    </widget>
+   </item>
+   <widget class="ctkCollapsibleButton" name="TumorDepthCollapsibleButton">
+     <property name="text">
+      <string>Tumor location</string>
+     </property>
+     <property name="collapsed">
+      <bool>true</bool>
+     </property>
+     <property name="collapsedHeight">
+      <number>9</number>
+     </property>
+     <layout class="QGridLayout" name="box">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+     <item row="1" column="1">
+      <widget class="QRadioButton" name="Location1">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Upper extremity</string>
+          </property>
+        </widget>
+      </item>
+     <item row="2" column="1">
+      <widget class="QRadioButton" name="Location2">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Lower extremity</string>
+          </property>
+        </widget>
+      </item>
+      <item row="3" column="1">
+      <widget class="QRadioButton" name="Location3">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Trunk</string>
+          </property>
+        </widget>
+      </item>
+           <item row="4" column="1">
+      <widget class="QRadioButton" name="Location4">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Head and neck</string>
+          </property>
+        </widget>
+      </item>
+      <item row="5" column="1">
+      <widget class="QRadioButton" name="Location5">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Retroperitoneum and pelvis</string>
+          </property>
+        </widget>
+      </item>
+      <item row="6" column="1">
+      <widget class="QRadioButton" name="Location6">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Paratesticular</string>
+          </property>
+        </widget>
+      </item>
+      <item row="7" column="1">
+      <widget class="QRadioButton" name="Location7">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+            <string>Other</string>
           </property>
         </widget>
       </item>

@@ -1443,31 +1443,31 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 totalSegments = segmentation.GetNumberOfSegments()
                 segmentIds = [segmentation.GetNthSegmentID(i) for i in range(totalSegments)]
 
-            # Check the score assigned
-            scores = []
-            for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
-                scores.append(button.isChecked())
+                # Check the score assigned
+                scores = []
+                for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                    scores.append(button.isChecked())
 
-            meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
+                meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
 
-            if any(scores):
-                score = [i for i, x in enumerate(scores) if x][0]
-                score = meaning[score]
-            else:
-                score = "No score given"
+                if any(scores):
+                    score = [i for i, x in enumerate(scores) if x][0]
+                    score = meaning[score]
+                else:
+                    score = "No score given"
 
-            #Check if deep or superficial
-            tumor_depths = []
-            for button in [self.ui.Superficial, self.ui.Deep]:
-                tumor_depth.append(button.isChecked())
+                #Check if deep or superficial
+                tumor_depths = []
+                for button in [self.ui.Superficial, self.ui.Deep]:
+                    tumor_depth.append(button.isChecked())
 
-            meaning = ["Superficial", "Deep"]
+                meaning = ["Superficial", "Deep"]
 
-            if any(tumor_depths):
-                tumor_depth = [i for i, x in enumerate(tumor_depths) if x][0]
-                tumor_depth = meaning[tumor_depth]
-            else:
-                tumor_depth = "No score given"
+                if any(tumor_depths):
+                    tumor_depth = [i for i, x in enumerate(tumor_depths) if x][0]
+                    tumor_depth = meaning[tumor_depth]
+                else:
+                    tumor_depth = "No score given"
 
                 # remove background and scribbles labels
                 label_info = []
