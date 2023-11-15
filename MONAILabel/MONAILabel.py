@@ -1438,19 +1438,6 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 totalSegments = segmentation.GetNumberOfSegments()
                 segmentIds = [segmentation.GetNthSegmentID(i) for i in range(totalSegments)]
 
-                # Check the score assigned
-                scores = []
-                for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
-                    scores.append(button.isChecked())
-
-                meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
-
-                if any(scores):
-                    score = [i for i, x in enumerate(scores) if x][0]
-                    score = meaning[score]
-                else:
-                    score = "No score given"
-
                 # remove background and scribbles labels
                 label_info = []
                 save_segment_ids = vtk.vtkStringArray()
@@ -1481,6 +1468,19 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 else:
                     slicer.util.saveNode(labelmapVolumeNode, label_in)
                 self.reportProgress(30)
+
+            # Check the score assigned
+            scores = []
+            for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                scores.append(button.isChecked())
+
+            meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
+
+            if any(scores):
+                score = [i for i, x in enumerate(scores) if x][0]
+                score = meaning[score]
+            else:
+                score = "No score given"
 
             self.updateServerSettings()
             result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
