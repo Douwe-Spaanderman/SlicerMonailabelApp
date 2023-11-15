@@ -1224,6 +1224,11 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
         start = time.time()
         try:
+            for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                button.setAutoExclusive(False)
+                button.setChecked(False)
+                button.setAutoExclusive(True)
+
             qt.QApplication.setOverrideCursor(qt.Qt.WaitCursor)
 
             self.updateServerSettings()
@@ -1233,6 +1238,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 return
 
             sample = self.logic.next_sample(strategy, self.getParamsFromConfig("activelearning", strategy))
+            self.start_time = time.time()
             logging.debug(sample)
             if not sample.get("id"):
                 slicer.util.warningDisplay(
@@ -1432,6 +1438,19 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 totalSegments = segmentation.GetNumberOfSegments()
                 segmentIds = [segmentation.GetNthSegmentID(i) for i in range(totalSegments)]
 
+                # Check the score assigned
+                scores = []
+                for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                    scores.append(button.isChecked())
+
+                meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
+
+                if any(scores):
+                    score = [i for i, x in enumerate(scores) if x][0]
+                    score = meaning[score]
+                else:
+                    score = "No score given"
+
                 # remove background and scribbles labels
                 label_info = []
                 save_segment_ids = vtk.vtkStringArray()
@@ -1464,7 +1483,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 self.reportProgress(30)
 
             self.updateServerSettings()
-            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info})
+            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
             self.fetchInfo()
 
             if slicer.util.settingsValue("MONAILabel/autoUpdateModelV2", False, converter=slicer.util.toBool):
@@ -1545,6 +1564,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         logging.info(f"Time consumed by segmentation: {time.time() - start:3.1f}")
 
     def onUpdateDeepgrow(self):
+        self.submit_time = time.time()
         self.onClickDeepgrow(None)
 
     def onClickDeepgrow(self, current_point, skip_infer=False):
