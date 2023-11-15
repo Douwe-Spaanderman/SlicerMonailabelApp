@@ -1491,7 +1491,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
             #Check if deep or superficial
             tumor_depths = []
             for button in [self.ui.Superficial, self.ui.Deep]:
-                tumor_depth.append(button.isChecked())
+                tumor_depths.append(button.isChecked())
 
             meaning = ["Superficial", "Deep"]
 

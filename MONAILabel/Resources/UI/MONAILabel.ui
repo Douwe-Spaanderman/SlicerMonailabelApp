@@ -647,7 +647,8 @@
       </layout>
     </widget>
    </item>
-   <widget class="ctkCollapsibleButton" name="TumorDepthCollapsibleButton">
+   <item>
+   <widget class="ctkCollapsibleButton" name="LocationCollapsibleButton">
      <property name="text">
       <string>Tumor location</string>
      </property>
@@ -694,7 +695,7 @@
           </property>
         </widget>
       </item>
-           <item row="4" column="1">
+      <item row="4" column="1">
       <widget class="QRadioButton" name="Location4">
           <property name="enabled">
            <bool>true</bool>
