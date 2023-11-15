@@ -1229,6 +1229,11 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 button.setChecked(False)
                 button.setAutoExclusive(True)
 
+            for button in [self.ui.Superficial, self.ui.Deep]:
+                button.setAutoExclusive(False)
+                button.setChecked(False)
+                button.setAutoExclusive(True)
+
             qt.QApplication.setOverrideCursor(qt.Qt.WaitCursor)
 
             self.updateServerSettings()
@@ -1451,6 +1456,19 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 else:
                     score = "No score given"
 
+            #Check if deep or superficial
+            tumor_depths = []
+            for button in [self.ui.Superficial, self.ui.Deep]:
+                tumor_depth.append(button.isChecked())
+
+            meaning = ["Superficial", "Deep"]
+
+            if any(tumor_depths):
+                tumor_depth = [i for i, x in enumerate(tumor_depths) if x][0]
+                tumor_depth = meaning[tumor_depth]
+            else:
+                tumor_depth = "No score given"
+
                 # remove background and scribbles labels
                 label_info = []
                 save_segment_ids = vtk.vtkStringArray()
@@ -1483,7 +1501,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 self.reportProgress(30)
 
             self.updateServerSettings()
-            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
+            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Depth": tumor_depth, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
             self.fetchInfo()
 
             if slicer.util.settingsValue("MONAILabel/autoUpdateModelV2", False, converter=slicer.util.toBool):
