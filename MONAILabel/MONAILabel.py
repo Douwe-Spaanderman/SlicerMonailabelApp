@@ -1229,7 +1229,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 button.setChecked(False)
                 button.setAutoExclusive(True)
 
-            for button in [self.ui.Superficial, self.ui.Deep]:
+            for button in [self.ui.Superficial, self.ui.Deep, self.ui.Location1, self.ui.Location2, self.ui.Location3, self.ui.Location4, self.ui.Location5, self.ui.Location6, self.ui.Location7]:
                 button.setAutoExclusive(False)
                 button.setChecked(False)
                 button.setAutoExclusive(True)
@@ -1469,6 +1469,19 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 else:
                     tumor_depth = "No score given"
 
+                #Check location
+                locations = []
+                for button in [self.ui.Location1, self.ui.Location2, self.ui.Location3, self.ui.Location4, self.ui.Location5, self.ui.Location6, self.ui.Location7]:
+                    locations.append(button.isChecked())
+
+                meaning = ["Upper extremity", "Lower extremity", "Trunk", "Head and neck", "Retroperitoneum and pelvis", "Paratesticular", "Other"]
+
+                if any(locations):
+                    location = [i for i, x in enumerate(locations) if x][0]
+                    location = meaning[location]
+                else:
+                    location = "No score given"
+
                 # remove background and scribbles labels
                 label_info = []
                 save_segment_ids = vtk.vtkStringArray()
@@ -1501,7 +1514,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 self.reportProgress(30)
 
             self.updateServerSettings()
-            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Depth": tumor_depth, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
+            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Depth": tumor_depth, "Tumor location": location, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
             self.fetchInfo()
 
             if slicer.util.settingsValue("MONAILabel/autoUpdateModelV2", False, converter=slicer.util.toBool):
