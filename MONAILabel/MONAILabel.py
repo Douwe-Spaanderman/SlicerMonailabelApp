@@ -319,6 +319,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         self.ui.dgUpdateCheckBox.setStyleSheet("padding-left: 10px;")
         self.ui.optionsSection.connect("currentIndexChanged(int)", self.onSelectOptionsSection)
         self.ui.optionsName.connect("currentIndexChanged(int)", self.onSelectOptionsName)
+        self.ui.Phenotype.valueChanged.connect(self.onSliderValueChanged)
 
         # Scribbles
         # brush and eraser icon from: https://tablericons.com/
@@ -463,6 +464,9 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
         # Initial GUI update
         self.updateGUIFromParameterNode()
+
+    def onSliderValueChanged(self, value):
+        self.phenotype = value
 
     def monitorTraining(self):
         status = self.isTrainingRunning(check_only=False)
@@ -1234,6 +1238,9 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 button.setChecked(False)
                 button.setAutoExclusive(True)
 
+            self.ui.Phenotype.setValue(0)
+            self.phenotype = None
+
             qt.QApplication.setOverrideCursor(qt.Qt.WaitCursor)
 
             self.updateServerSettings()
@@ -1515,7 +1522,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 location = "No score given"
 
             self.updateServerSettings()
-            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Depth": tumor_depth, "Tumor location": location, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
+            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Phenotype": self.phenotype, "Tumor Depth": tumor_depth, "Tumor location": location, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
             self.fetchInfo()
 
             if slicer.util.settingsValue("MONAILabel/autoUpdateModelV2", False, converter=slicer.util.toBool):
