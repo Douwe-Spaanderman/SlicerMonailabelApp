@@ -1443,18 +1443,18 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 totalSegments = segmentation.GetNumberOfSegments()
                 segmentIds = [segmentation.GetNthSegmentID(i) for i in range(totalSegments)]
 
-                # Check the score assigned
-                scores = []
-                for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
-                    scores.append(button.isChecked())
+            # Check the score assigned
+            scores = []
+            for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                scores.append(button.isChecked())
 
-                meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
+            meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
 
-                if any(scores):
-                    score = [i for i, x in enumerate(scores) if x][0]
-                    score = meaning[score]
-                else:
-                    score = "No score given"
+            if any(scores):
+                score = [i for i, x in enumerate(scores) if x][0]
+                score = meaning[score]
+            else:
+                score = "No score given"
 
             #Check if deep or superficial
             tumor_depths = []
