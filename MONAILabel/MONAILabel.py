@@ -1244,6 +1244,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
             sample = self.logic.next_sample(strategy, self.getParamsFromConfig("activelearning", strategy))
             self.start_time = time.time()
+            self.submit_time = 0
             logging.debug(sample)
             if not sample.get("id"):
                 slicer.util.warningDisplay(
@@ -1443,45 +1444,6 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 totalSegments = segmentation.GetNumberOfSegments()
                 segmentIds = [segmentation.GetNthSegmentID(i) for i in range(totalSegments)]
 
-                # Check the score assigned
-                scores = []
-                for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
-                    scores.append(button.isChecked())
-
-                meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
-
-                if any(scores):
-                    score = [i for i, x in enumerate(scores) if x][0]
-                    score = meaning[score]
-                else:
-                    score = "No score given"
-
-                #Check if deep or superficial
-                tumor_depths = []
-                for button in [self.ui.Superficial, self.ui.Deep]:
-                    tumor_depth.append(button.isChecked())
-
-                meaning = ["Superficial", "Deep"]
-
-                if any(tumor_depths):
-                    tumor_depth = [i for i, x in enumerate(tumor_depths) if x][0]
-                    tumor_depth = meaning[tumor_depth]
-                else:
-                    tumor_depth = "No score given"
-
-                #Check location
-                locations = []
-                for button in [self.ui.Location1, self.ui.Location2, self.ui.Location3, self.ui.Location4, self.ui.Location5, self.ui.Location6, self.ui.Location7]:
-                    locations.append(button.isChecked())
-
-                meaning = ["Upper extremity", "Lower extremity", "Trunk", "Head and neck", "Retroperitoneum and pelvis", "Paratesticular", "Other"]
-
-                if any(locations):
-                    location = [i for i, x in enumerate(locations) if x][0]
-                    location = meaning[location]
-                else:
-                    location = "No score given"
-
                 # remove background and scribbles labels
                 label_info = []
                 save_segment_ids = vtk.vtkStringArray()
@@ -1512,6 +1474,45 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 else:
                     slicer.util.saveNode(labelmapVolumeNode, label_in)
                 self.reportProgress(30)
+
+            # Check the score assigned
+            scores = []
+            for button in [self.ui.SegScore1, self.ui.SegScore2, self.ui.SegScore3, self.ui.SegScore4, self.ui.SegScore5]:
+                scores.append(button.isChecked())
+
+            meaning = ["Excellent", "Sufficient", "Insufficient", "Incorrect", "Cannot locate tumor"]
+
+            if any(scores):
+                score = [i for i, x in enumerate(scores) if x][0]
+                score = meaning[score]
+            else:
+                score = "No score given"
+
+            #Check if deep or superficial
+            tumor_depths = []
+            for button in [self.ui.Superficial, self.ui.Deep]:
+                tumor_depth.append(button.isChecked())
+
+            meaning = ["Superficial", "Deep"]
+
+            if any(tumor_depths):
+                tumor_depth = [i for i, x in enumerate(tumor_depths) if x][0]
+                tumor_depth = meaning[tumor_depth]
+            else:
+                tumor_depth = "No score given"
+
+            #Check location
+            locations = []
+            for button in [self.ui.Location1, self.ui.Location2, self.ui.Location3, self.ui.Location4, self.ui.Location5, self.ui.Location6, self.ui.Location7]:
+                locations.append(button.isChecked())
+
+            meaning = ["Upper extremity", "Lower extremity", "Trunk", "Head and neck", "Retroperitoneum and pelvis", "Paratesticular", "Other"]
+
+            if any(locations):
+                location = [i for i, x in enumerate(locations) if x][0]
+                location = meaning[location]
+            else:
+                location = "No score given"
 
             self.updateServerSettings()
             result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Tumor Depth": tumor_depth, "Tumor location": location, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
