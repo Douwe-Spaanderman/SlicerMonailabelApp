@@ -222,6 +222,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         self.trainers = OrderedDict()
         self.config = OrderedDict()
         self.current_sample = None
+        self.submit_time = None
         self.samples = {}
         self.state = {
             "SegmentationModel": "",
