@@ -1239,7 +1239,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
             sample = self.logic.next_sample(strategy, self.getParamsFromConfig("activelearning", strategy))
             self.start_time = time.time()
-            self.submit_time = None
+            self.submit_time = 0
             logging.debug(sample)
             if not sample.get("id"):
                 slicer.util.warningDisplay(
