@@ -222,7 +222,6 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         self.trainers = OrderedDict()
         self.config = OrderedDict()
         self.current_sample = None
-        self.submit_time = None
         self.samples = {}
         self.state = {
             "SegmentationModel": "",
@@ -1240,6 +1239,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
             sample = self.logic.next_sample(strategy, self.getParamsFromConfig("activelearning", strategy))
             self.start_time = time.time()
+            self.submit_time = None
             logging.debug(sample)
             if not sample.get("id"):
                 slicer.util.warningDisplay(
