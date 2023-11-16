@@ -17,6 +17,7 @@ limitations under the License.
 - Branches with added functionality needed for certain studies:
     - main: original
     - score: segmentation quality scoring
+    - adjust: adds button in order to submit additional segmentation (also includes segmentation quality score)
     - LipoALT: lipoma vs ALT validation study, includes segmentation scoring, and classification of phenotyping, location and tumor depth.
 
 ## MONAI Label Plugin for 3D Slicer
