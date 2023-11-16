@@ -201,14 +201,14 @@
       <property name="rightMargin">
        <number>0</number>
       </property>
-      <item row="0" column="0" colspan="2">
+      <item row="0" column="0" colspan="3">
        <widget class="QProgressBar" name="activeLearningProgressBar">
         <property name="value">
          <number>0</number>
         </property>
        </widget>
       </item>
-      <item row="8" column="0" colspan="2">
+      <item row="8" column="0" colspan="3">
        <widget class="QWidget" name="trainWidget">
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="1" column="0">
@@ -287,7 +287,14 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="4" column="2">
+       <widget class="QPushButton" name="saveAdjLabelButton">
+        <property name="text">
+         <string>Submit Adjusted Label</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
        <widget class="QLabel" name="label_7">
         <property name="text">
          <string>Strategy:</string>
@@ -301,7 +308,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="2">
+      <item row="3" column="0" colspan="3">
        <widget class="QComboBox" name="strategyBox"/>
       </item>
      </layout>

@@ -282,6 +282,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         self.ui.segmentationButton.setIcon(self.icon("segment.png"))
         self.ui.nextSampleButton.setIcon(self.icon("segment.png"))
         self.ui.saveLabelButton.setIcon(self.icon("save.png"))
+        self.ui.saveAdjLabelButton.setIcon(self.icon("save.png"))
         self.ui.trainingButton.setIcon(self.icon("training.png"))
         self.ui.stopTrainingButton.setIcon(self.icon("stop.png"))
         self.ui.uploadImageButton.setIcon(self.icon("upload.svg"))
@@ -311,6 +312,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         self.ui.trainingButton.connect("clicked(bool)", self.onTraining)
         self.ui.stopTrainingButton.connect("clicked(bool)", self.onStopTraining)
         self.ui.saveLabelButton.connect("clicked(bool)", self.onSaveLabel)
+        self.ui.saveAdjLabelButton.connect("clicked(bool)", lambda: self.onSaveLabel(True))
         self.ui.uploadImageButton.connect("clicked(bool)", self.onUploadImage)
         self.ui.importLabelButton.connect("clicked(bool)", self.onImportLabel)
         self.ui.labelComboBox.connect("currentIndexChanged(int)", self.onSelectLabel)
@@ -630,6 +632,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
             self.ui.segmentationModelSelector.currentText and self._volumeNode is not None
         )
         self.ui.saveLabelButton.setEnabled(self._segmentNode is not None)
+        self.ui.saveAdjLabelButton.setEnabled(self._segmentNode is not None)
         self.ui.importLabelButton.setEnabled(self._segmentNode is not None)
 
         # Create empty markup point list node for deep grow +ve and -ve
@@ -1416,7 +1419,7 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
             qt.QApplication.restoreOverrideCursor()
             slicer.util.errorDisplay("Failed to import label", detailedText=traceback.format_exc())
 
-    def onSaveLabel(self):
+    def onSaveLabel(self, adjusted=False):
         start = time.time()
         labelmapVolumeNode = None
         result = None
@@ -1484,7 +1487,11 @@ class MONAILabelWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
                 score = "No score given"
 
             self.updateServerSettings()
-            result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
+
+            if adjusted:
+                result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())}, tag="adjusted")
+            else:
+                result = self.logic.save_label(self.current_sample["id"], label_in, {"label_info": label_info, "Clinical score": score, "Start time": int(self.start_time), "Submit time": int(self.submit_time), "Finished time": int(time.time())})
             self.fetchInfo()
 
             if slicer.util.settingsValue("MONAILabel/autoUpdateModelV2", False, converter=slicer.util.toBool):
@@ -2304,8 +2311,8 @@ class MONAILabelLogic(ScriptedLoadableModuleLogic):
     def upload_image(self, image_in, image_id=None):
         return self._client().upload_image(image_in, image_id)
 
-    def save_label(self, image_in, label_in, params):
-        return self._client().save_label(image_in, label_in, params=params)
+    def save_label(self, image_in, label_in, params, tag=""):
+        return self._client().save_label(image_in, label_in, tag=tag, params=params)
 
     def infer(self, model, image_in, params={}, label_in=None, file=None, session_id=None):
         logging.debug("Preparing input data for segmentation")
